@@ -5,6 +5,9 @@ class Color(object):
     def __init__(self, red, green, blue):
         self.red, self.green, self.blue = red, green, blue
 
+    def __add__(self, other):
+        return Color(self.red + other.red, self.green + other.green, self.blue + other.blue)
+
     def __str__(self):
         return 'Color(red={}, green={}, blue={})'.format(self.red, self.green, self.blue)
 
@@ -22,7 +25,7 @@ class Color(object):
 
     @classmethod
     def average(cls, *args):
-        return cls(*(sum(vals) // len(args) for vals in zip(*args)))
+        return cls(*(sum(vals) // len(args) for vals in zip(*(arg for arg in args if arg))))
 
 
 
