@@ -15,6 +15,11 @@ class Bitmap(object):
         for y, row in enumerate(self.bitmap):
             for x, pixel in enumerate(row):
                 yield x, y, pixel
+
+    def difference(self, other):
+        assert self.width == other.width and self.height == other.height
+        return Bitmap([[a.difference(b) for a, b in zip(*rows)] for rows in zip(self.bitmap, other.bitmap)])
+
     def copy(self):
         return Bitmap([row[:] for row in self.bitmap])
     def scale(self, ratio):
