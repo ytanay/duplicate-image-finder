@@ -15,6 +15,8 @@ class Bitmap(object):
         for y, row in enumerate(self.bitmap):
             for x, pixel in enumerate(row):
                 yield x, y, pixel
+    def copy(self):
+        return Bitmap([row[:] for row in self.bitmap])
     def scale(self, ratio):
         output, width, height = [], round(self.width * ratio), round(self.height * ratio)
         for y in range(height):
@@ -22,3 +24,8 @@ class Bitmap(object):
             output.append([self.bitmap[original_y][int(x // ratio)] for x in range(width)])
 
         return Bitmap(output)
+    def get(self, x, y, default=None):
+        if 0 <= x < self.width and 0 <= y < self.height:
+            return self.bitmap[y][x]
+
+        return default
