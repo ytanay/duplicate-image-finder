@@ -33,3 +33,18 @@ class BMPFile(object):
 
     FORMAT_STRING = '<' + ''.join(FORMAT_CHARS[field[1]] for field in BMP_FIELDS)
 
+    def __init__(self, metadata, data):
+        self.width, self.height = metadata.width, metadata.height
+        self.metadata = metadata
+        self.data = data
+
+    @classmethod
+    def read(cls, file_handle):
+        contents = file_handle.read()
+        metadata = BMPMetadata(*struct.unpack_from(FORMAT_STRING, contents))
+        assert metadata.id == 0x4D42
+
+        return cls(metadata, contents[metadata.bitmap_offset:])
+
+
+
