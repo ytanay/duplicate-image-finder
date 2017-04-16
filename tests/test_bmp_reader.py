@@ -1,5 +1,7 @@
 import os
 
+import pytest
+
 from imgdedup import color
 from imgdedup.bmp_reader import BMPFile, BMPMetadata
 
@@ -40,4 +42,14 @@ def test_get_specific_pixels():
         assert bmp.pixel(0, 1) == color.RED
         assert bmp.pixel(1, 0) == color.GREEN
         assert bmp.pixel(1, 1) == color.WHITE
-       
+
+
+def test_bounds_checking():
+    with open(EX_2BY2, 'rb') as f:
+        bmp = BMPFile.read(f)
+
+        with pytest.raises(ValueError):
+            bmp.pixel(2, 0)
+
+        with pytest.raises(ValueError):
+            bmp.pixel(-1, 0)
