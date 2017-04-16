@@ -12,6 +12,9 @@ class Color(object):
     def __iter__(self):
         return iter((self.red, self.green, self.blue))
 
+    def hex(self):
+        return "#%02x%02x%02x" % (self.red, self.green, self.blue)
+
 
 RED = Color(red=255, green=0, blue=0)
 GREEN = Color(red=0, green=255, blue=0)
