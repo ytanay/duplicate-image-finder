@@ -15,3 +15,10 @@ class Bitmap(object):
         for y, row in enumerate(self.bitmap):
             for x, pixel in enumerate(row):
                 yield x, y, pixel
+    def scale(self, ratio):
+        output, width, height = [], round(self.width * ratio), round(self.height * ratio)
+        for y in range(height):
+            original_y = int(y // ratio)
+            output.append([self.bitmap[original_y][int(x // ratio)] for x in range(width)])
+
+        return Bitmap(output)
