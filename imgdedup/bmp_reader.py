@@ -44,6 +44,9 @@ class BMPFile(object):
         self.data = data
 
     def offset(self, x, y):
+        if not (0 <= x < self.width and 0 <= y < self.height):
+            raise ValueError('Pixel not in bounds')
+
         return (self.height - y - 1) * self.row_offset + (x * 3)
 
     def pixel(self, x, y):
