@@ -1,7 +1,11 @@
 import math
 
+import itertools
+
 from imgdedup import color
 from imgdedup.color import Color
+
+DIRECTIONS = list(itertools.product((-1, 0, 1), repeat=2))
 
 
 class Bitmap(object):
@@ -22,6 +26,10 @@ class Bitmap(object):
 
     def copy(self):
         return Bitmap([row[:] for row in self.bitmap])
+
+    def average(self, x, y):
+        return Color.average(*(self.get(x + d1, y + d2) for d1, d2 in DIRECTIONS))
+
     def scale(self, ratio):
         output, width, height = [], round(self.width * ratio), round(self.height * ratio)
         for y in range(height):
