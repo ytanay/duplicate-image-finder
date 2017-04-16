@@ -2,6 +2,8 @@ import collections
 
 import struct
 
+from imgdedup.color import Color
+
 BMP_FIELDS = [
     ('id', 2),
     ('size', 4),
@@ -32,20 +34,30 @@ BMPMetadata = collections.namedtuple('BMPMetadata', [field[0] for field in BMP_F
 
 class BMPFile(object):
 
-    FORMAT_STRING = '<' + ''.join(FORMAT_CHARS[field[1]] for field in BMP_FIELDS)
+    HEADER_FORMAT_STRING = '<' + ''.join(FORMAT_CHARS[field[1]] for field in BMP_FIELDS)
+    PIXEL_FORMAT_STRING = '<BBB'
 
     def __init__(self, metadata, data):
         self.width, self.height = metadata.width, metadata.height
+        self.row_offset = self.compute_row_offset(self.width)
         self.metadata = metadata
         self.data = data
+
+    def offset(self, x, y):
+        return (self.height - y - 1) * self.row_offset + (x * 3)
+
+    def pixel(self, x, y):
+        return Color(*reversed(struct.unpack_from(self.PIXEL_FORMAT_STRING, self.data, self.offset(x, y))))
+
+    @staticmethod
+    def compute_row_offset(width):
+        bytes_per_row = width * 3
+        return bytes_per_row if width % 4 == 0 else ((bytes_per_row // 4) + 1) * 4
 
     @classmethod
     def read(cls, file_handle):
         contents = file_handle.read()
-        metadata = BMPMetadata(*struct.unpack_from(cls.FORMAT_STRING, contents))
+        metadata = BMPMetadata(*struct.unpack_from(cls.HEADER_FORMAT_STRING, contents))
         assert metadata.id == 0x4D42
 
         return cls(metadata, contents[metadata.bitmap_offset:])
-
-
-
