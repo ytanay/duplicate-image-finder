@@ -1,13 +1,15 @@
 import os
 
+from imgdedup import color
 from imgdedup.bmp_reader import BMPFile, BMPMetadata
 
 RESOURCES_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'resources')
+EX_2BY2 = os.path.join(RESOURCES_PATH, '2by2.bmp')
 
 
 def test_bmp_metadata_parser():
-    file_path = os.path.join(RESOURCES_PATH, '2by2.bmp')
-    with open(file_path, 'rb') as f:
+
+    with open(EX_2BY2, 'rb') as f:
         bmp = BMPFile.read(f)
         assert bmp.width == bmp.height == 2
         assert bmp.metadata == BMPMetadata(
@@ -28,3 +30,14 @@ def test_bmp_metadata_parser():
             palette_size=0,
             important_colors=0
         )
+
+
+def test_get_specific_pixels():
+    with open(EX_2BY2, 'rb') as f:
+        bmp = BMPFile.read(f)
+
+        assert bmp.pixel(0, 0) == color.BLUE
+        assert bmp.pixel(0, 1) == color.RED
+        assert bmp.pixel(1, 0) == color.GREEN
+        assert bmp.pixel(1, 1) == color.WHITE
+       
