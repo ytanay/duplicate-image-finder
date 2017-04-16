@@ -2,6 +2,7 @@ import collections
 
 import struct
 
+from imgdedup.bitmap import Bitmap
 from imgdedup.color import Color
 
 BMP_FIELDS = [
@@ -51,6 +52,9 @@ class BMPFile(object):
 
     def pixel(self, x, y):
         return Color(*reversed(struct.unpack_from(self.PIXEL_FORMAT_STRING, self.data, self.offset(x, y))))
+
+    def bitmap(self):
+        return Bitmap([[self.pixel(x, y) for x in range(self.width)] for y in range(self.height)])
 
     @staticmethod
     def compute_row_offset(width):
