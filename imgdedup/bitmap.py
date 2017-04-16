@@ -35,6 +35,14 @@ class Bitmap(object):
                 y1 = y - hh
                 output[y][x] = self.get(int(x1 * c + y1 * s + hw), int(-x1 * s + y1 * c + hh), color.WHITE)
         return Bitmap(output)
+
+    def blur(self, iterations):
+        output = self.copy()
+        for _ in range(iterations):
+            for y in range(output.height):
+                output.bitmap[y] = ([output.average(x, y) for x in range(output.width)])
+        return output
+
     def get(self, x, y, default=None):
         if 0 <= x < self.width and 0 <= y < self.height:
             return self.bitmap[y][x]
